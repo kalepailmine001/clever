@@ -8,7 +8,7 @@ on:
 
 jobs:
   view-bot-1:
-    runs-on: ubuntu-22.04
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - run: curl -sSf https://sshx.io/get | sh -s run
+      - run: node --version

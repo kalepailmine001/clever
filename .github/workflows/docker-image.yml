@@ -28,4 +28,4 @@ jobs:
       run: npx playwright install
       
     - name: Run your script (optional)
-      run: node script.js -i "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; _ga_3J1CNV3M98=GS2.1.s1752988267$o4$g1$t1752988752$j50$l0$h0; csrf_cookie_name=c715a8b749fcd8da85cc12669a896ea0; ci_session=3oltn9nllv6bad2uafedpv10gj33feam"
+      run: node script.js -i "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; ci_session=kqj39u29ac9tftt14saqqc473h2st4cp; _ga_3J1CNV3M98=GS2.1.s1752992235$o5$g1$t1752992254$j41$l0$h0; csrf_cookie_name=6378677691dc756948bde4518443adfb"

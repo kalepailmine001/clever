@@ -5,21 +5,26 @@ on:
     branches: [ "main" ]
 
 jobs:
-  run-script:
+  infinite-curl:
     runs-on: windows-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Run curl in infinite loop every 32s
-      shell: cmd
-      run: |
-        @echo off
-        :loop
-        echo Sending request at %time%...
-        curl "https://litefaucet.in/smm/api/claim_watch/28" ^
-          -b "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; ci_session=hkftt6rqlshvs6u3jj6tfu14qbsn5scr; _ga_3J1CNV3M98=GS2.1.s1752992235$o5$g1$t1752994294$j50$l0$h0; csrf_cookie_name=5e448b49f25f9e01bbc88520f315d324" ^
-          -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-        timeout /t 32 >nul
-        goto loop
+      - name: Infinite curl every 32s (PowerShell)
+        shell: pwsh
+        run: |
+          while ($true) {
+            Write-Host "Sending request at $(Get-Date -Format 'HH:mm:ss')..."
+            curl "https://litefaucet.in/smm/api/claim_watch/28" `
+              -H "accept: */*" `
+              -H "accept-language: en-US,en;q=0.9" `
+              -H "priority: u=1, i" `
+              -H "referer: https://litefaucet.in/smm/watch" `
+              -H "sec-ch-ua: `"Not)A;Brand`";v=`"8`", `"Chromium`";v=`"138`", `"Google Chrome`";v=`"138`"" `
+              -H "sec-ch-ua-mobile: ?0" `
+              -H "sec-ch-ua-platform: `"Windows`"" `
+              -H "sec-fetch-dest: empty" `
+              -H "sec-fetch-mode: cors" `
+              -H "sec-fetch-site: same-origin" `
+              -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" `
+              -b "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=...; ci_session=...; csrf_cookie_name=..."
+            Start-Sleep -Seconds 32
+          }

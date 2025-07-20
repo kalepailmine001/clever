@@ -1,19 +1,19 @@
 const { webkit } = require('playwright');
-const chalk = require('chalk');
 
+// Log helpers (no colors)
 function logStep(msg) {
-  console.log(chalk.blue(`[STEP] ${msg}`));
+  console.log(`[STEP] ${msg}`);
 }
 
 function logError(msg) {
-  console.error(chalk.red(`[ERROR] ${msg}`));
+  console.error(`[ERROR] ${msg}`);
 }
 
 function logSuccess(msg) {
-  console.log(chalk.green(`[SUCCESS] ${msg}`));
+  console.log(`[SUCCESS] ${msg}`);
 }
 
-// Convert raw cookie string to Playwright-compatible array
+// Convert cookie string into Playwright cookie format
 function parseCookies(cookieString) {
   return cookieString.split(';').map(cookie => {
     const [name, ...val] = cookie.trim().split('=');
@@ -26,7 +26,7 @@ function parseCookies(cookieString) {
   });
 }
 
-// Random human-like delay
+// Human-like delay
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -37,14 +37,13 @@ async function humanDelay(min = 1000, max = 3000) {
 }
 
 async function run() {
-  logStep('Launching browser (WebKit)...');
+  logStep('Launching WebKit browser...');
   const browser = await webkit.launch({ headless: true });
-
   const context = await browser.newContext();
 
   const cookieString = process.env.LITEFAUCET_COOKIES;
   if (!cookieString) {
-    logError('Environment variable LITEFAUCET_COOKIES is missing!');
+    logError('Missing LITEFAUCET_COOKIES environment variable.');
     process.exit(1);
   }
 
@@ -59,16 +58,17 @@ async function run() {
 
   while (attempt < maxAttempts && !success) {
     attempt++;
-    logStep(`Navigating to dashboard (Attempt ${attempt})...`);
+    logStep(`Attempt ${attempt}: Navigating to dashboard...`);
     try {
       await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded', timeout: 30000 });
       await humanDelay();
+
       if (page.url().includes('/dashboard/adblock')) {
         logError('Redirected to adblock page, retrying...');
         continue;
       }
 
-      logSuccess('Dashboard loaded successfully.');
+      logSuccess('Dashboard loaded.');
 
       logStep('Navigating to watch page...');
       await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded', timeout: 30000 });
@@ -91,29 +91,28 @@ async function run() {
         continue;
       }
 
-      logStep('Clicking play button...');
+      logStep('Trying to click play on video...');
       await humanDelay(1000, 2500);
-      await frame.click('button[aria-label="Play"], .ytp-large-play-button', { timeout: 10000 }).catch(() => {
-        logError('Play button not found or failed to click.');
+      await frame.click('button[aria-label="Play"], .ytp-large-play-button').catch(() => {
+        logError('Play button not found or not clickable.');
       });
 
-      logSuccess('Video clicked successfully.');
-      logStep('Watching for ~30 seconds...');
-      await humanDelay(25000, 35000); // Let the video play
+      logSuccess('Clicked video. Watching...');
+      await humanDelay(25000, 35000);
 
       success = true;
-    } catch (error) {
-      logError(`Exception: ${error.message}`);
+    } catch (err) {
+      logError(`Exception: ${err.message}`);
       await humanDelay(2000, 4000);
     }
   }
 
   if (!success) {
-    logError('Max attempts reached. Exiting script with failure.');
+    logError('Max retries reached. Exiting...');
     process.exit(1);
   }
 
-  logSuccess('Finished job. Closing browser...');
+  logSuccess('Script completed successfully.');
   await browser.close();
 }
 

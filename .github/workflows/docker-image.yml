@@ -9,22 +9,28 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Infinite curl every 32s (PowerShell)
-        shell: pwsh
+        shell: cmd
         run: |
-          while ($true) {
-            Write-Host "Sending request at $(Get-Date -Format 'HH:mm:ss')..."
-            curl "https://litefaucet.in/smm/api/claim_watch/28" `
-              -H "accept: */*" `
-              -H "accept-language: en-US,en;q=0.9" `
-              -H "priority: u=1, i" `
-              -H "referer: https://litefaucet.in/smm/watch" `
-              -H "sec-ch-ua: `"Not)A;Brand`";v=`"8`", `"Chromium`";v=`"138`", `"Google Chrome`";v=`"138`"" `
-              -H "sec-ch-ua-mobile: ?0" `
-              -H "sec-ch-ua-platform: `"Windows`"" `
-              -H "sec-fetch-dest: empty" `
-              -H "sec-fetch-mode: cors" `
-              -H "sec-fetch-site: same-origin" `
-              -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" `
-              -b "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=...; ci_session=...; csrf_cookie_name=..."
-            Start-Sleep -Seconds 32
-          }
+          @echo off
+          :loop
+          set hour=%time:~0,2%
+          set min=%time:~3,2%
+          set sec=%time:~6,2%
+          echo Sending request at %hour%:%min%:%sec%...
+          
+          curl "https://litefaucet.in/smm/api/claim_watch/28" ^
+            -H "accept: */*" ^
+            -H "accept-language: en-US,en;q=0.9" ^
+            -H "priority: u=1, i" ^
+            -H "referer: https://litefaucet.in/smm/watch" ^
+            -H "sec-ch-ua: \"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"" ^
+            -H "sec-ch-ua-mobile: ?0" ^
+            -H "sec-ch-ua-platform: \"Windows\"" ^
+            -H "sec-fetch-dest: empty" ^
+            -H "sec-fetch-mode: cors" ^
+            -H "sec-fetch-site: same-origin" ^
+            -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" ^
+            -b "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=...; ci_session=...; csrf_cookie_name=..."
+          
+          timeout /t 32 /nobreak >nul
+          goto loop

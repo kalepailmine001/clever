@@ -1,12 +1,13 @@
 const { webkit } = require('playwright');
 
-// Console logging (simple)
+// Logging
 const log = {
   step: (msg) => console.log(`[STEP] ${msg}`),
   error: (msg) => console.error(`[ERROR] ${msg}`),
   success: (msg) => console.log(`[SUCCESS] ${msg}`),
 };
 
+// Sleep helpers
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -15,6 +16,7 @@ function humanDelay(min = 1000, max = 3000) {
   return sleep(Math.floor(Math.random() * (max - min + 1)) + min);
 }
 
+// Cookie parser for Playwright
 function parseCookies(cookieStr) {
   return cookieStr.split(';').map(c => {
     const [name, ...rest] = c.trim().split('=');
@@ -37,6 +39,7 @@ async function run() {
   const browser = await webkit.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
+
   const cookies = parseCookies(cookiesRaw);
   await context.addCookies(cookies);
 
@@ -47,8 +50,9 @@ async function run() {
   while (attempt < maxRetries && !success) {
     attempt++;
     log.step(`Attempt ${attempt}: Visiting dashboard...`);
+
     try {
-      await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded' });
+      await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded', timeout: 30000 });
       await humanDelay();
 
       if (page.url().includes('/dashboard/adblock')) {
@@ -60,7 +64,7 @@ async function run() {
       log.success('Dashboard loaded successfully.');
 
       log.step('Visiting /smm/watch...');
-      await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded' });
+      await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded', timeout: 30000 });
       await humanDelay();
 
       if (page.url().includes('/dashboard/adblock')) {
@@ -72,36 +76,60 @@ async function run() {
       log.success('Watch page loaded.');
 
       log.step('Waiting for iframe...');
-      const iframeElement = await page.waitForSelector('#youtube-player', { timeout: 15000 });
-      const frame = await iframeElement.contentFrame();
+      try {
+        const iframeElement = await page.waitForSelector('#youtube-player', {
+          timeout: 30000,
+          state: 'attached',
+        });
 
-      if (!frame) {
-        log.error('Could not access iframe content.');
+        const frame = await iframeElement.contentFrame();
+
+        if (!frame) {
+          log.error('Iframe found but could not get frame context.');
+          continue;
+        }
+
+        log.step('Clicking play button in iframe...');
+        await humanDelay(1000, 2500);
+
+        await frame.click('button[aria-label="Play"], .ytp-large-play-button', { timeout: 10000 })
+          .catch(() => {
+            log.error('Play button not found or not clickable.');
+          });
+
+        log.success('Clicked video. Watching...');
+        await humanDelay(25000, 35000);
+        success = true;
+
+      } catch (iframeErr) {
+        log.error(`Iframe not found or load error: ${iframeErr.message}`);
+
+        // Debug info: show all iframes on page
+        const iframeHandles = await page.$$('iframe');
+        log.step(`Found ${iframeHandles.length} iframe(s) on page.`);
+        for (const iframe of iframeHandles) {
+          const id = await iframe.getAttribute('id');
+          const src = await iframe.getAttribute('src');
+          log.step(` - iframe ID: ${id || '(none)'}, src: ${src || '(none)'}`);
+        }
+
+        await humanDelay(2000, 4000);
         continue;
       }
 
-      log.step('Trying to click video play button...');
-      await humanDelay(1000, 2500);
-      await frame.click('button[aria-label="Play"], .ytp-large-play-button', { timeout: 8000 }).catch(() => {
-        log.error('Play button not clickable or missing.');
-      });
-
-      log.success('Clicked video. Watching...');
-      await humanDelay(25000, 35000); // Simulate watching
-
-      success = true;
     } catch (err) {
-      log.error(`Error: ${err.message}`);
+      log.error(`Navigation error: ${err.message}`);
       await humanDelay(2000, 4000);
     }
   }
 
   if (!success) {
     log.error('Failed after maximum retries.');
+    await browser.close();
     process.exit(1);
   }
 
-  log.success('Job complete.');
+  log.success('Script completed successfully.');
   await browser.close();
 }
 

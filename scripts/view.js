@@ -1,118 +1,107 @@
 const { webkit } = require('playwright');
 
-// Log helpers (no colors)
-function logStep(msg) {
-  console.log(`[STEP] ${msg}`);
+// Console logging (simple)
+const log = {
+  step: (msg) => console.log(`[STEP] ${msg}`),
+  error: (msg) => console.error(`[ERROR] ${msg}`),
+  success: (msg) => console.log(`[SUCCESS] ${msg}`),
+};
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function logError(msg) {
-  console.error(`[ERROR] ${msg}`);
+function humanDelay(min = 1000, max = 3000) {
+  return sleep(Math.floor(Math.random() * (max - min + 1)) + min);
 }
 
-function logSuccess(msg) {
-  console.log(`[SUCCESS] ${msg}`);
-}
-
-// Convert cookie string into Playwright cookie format
-function parseCookies(cookieString) {
-  return cookieString.split(';').map(cookie => {
-    const [name, ...val] = cookie.trim().split('=');
+function parseCookies(cookieStr) {
+  return cookieStr.split(';').map(c => {
+    const [name, ...rest] = c.trim().split('=');
     return {
       name,
-      value: val.join('='),
+      value: rest.join('='),
       domain: 'litefaucet.in',
       path: '/',
     };
   });
 }
 
-// Human-like delay
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function humanDelay(min = 1000, max = 3000) {
-  const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-  await sleep(delay);
-}
-
 async function run() {
-  logStep('Launching WebKit browser...');
-  const browser = await webkit.launch({ headless: true });
-  const context = await browser.newContext();
-
-  const cookieString = process.env.LITEFAUCET_COOKIES;
-  if (!cookieString) {
-    logError('Missing LITEFAUCET_COOKIES environment variable.');
+  const cookiesRaw = process.env.LITEFAUCET_COOKIES;
+  if (!cookiesRaw) {
+    log.error('Missing LITEFAUCET_COOKIES environment variable!');
     process.exit(1);
   }
 
-  const cookies = parseCookies(cookieString);
+  const browser = await webkit.launch({ headless: true });
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const cookies = parseCookies(cookiesRaw);
   await context.addCookies(cookies);
 
-  const page = await context.newPage();
-
-  let maxAttempts = 5;
+  let maxRetries = 5;
   let attempt = 0;
   let success = false;
 
-  while (attempt < maxAttempts && !success) {
+  while (attempt < maxRetries && !success) {
     attempt++;
-    logStep(`Attempt ${attempt}: Navigating to dashboard...`);
+    log.step(`Attempt ${attempt}: Visiting dashboard...`);
     try {
-      await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded' });
       await humanDelay();
 
       if (page.url().includes('/dashboard/adblock')) {
-        logError('Redirected to adblock page, retrying...');
+        log.error('Redirected to adblock page. Retrying...');
+        await humanDelay(2000, 4000);
         continue;
       }
 
-      logSuccess('Dashboard loaded.');
+      log.success('Dashboard loaded successfully.');
 
-      logStep('Navigating to watch page...');
-      await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      log.step('Visiting /smm/watch...');
+      await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded' });
       await humanDelay();
 
       if (page.url().includes('/dashboard/adblock')) {
-        logError('Blocked again on watch page, retrying...');
+        log.error('Blocked again on watch page. Retrying...');
+        await humanDelay(2000, 4000);
         continue;
       }
 
-      logSuccess('Watch page loaded.');
+      log.success('Watch page loaded.');
 
-      logStep('Waiting for YouTube iframe...');
+      log.step('Waiting for iframe...');
       const iframeElement = await page.waitForSelector('#youtube-player', { timeout: 15000 });
-
       const frame = await iframeElement.contentFrame();
 
       if (!frame) {
-        logError('Failed to access YouTube iframe.');
+        log.error('Could not access iframe content.');
         continue;
       }
 
-      logStep('Trying to click play on video...');
+      log.step('Trying to click video play button...');
       await humanDelay(1000, 2500);
-      await frame.click('button[aria-label="Play"], .ytp-large-play-button').catch(() => {
-        logError('Play button not found or not clickable.');
+      await frame.click('button[aria-label="Play"], .ytp-large-play-button', { timeout: 8000 }).catch(() => {
+        log.error('Play button not clickable or missing.');
       });
 
-      logSuccess('Clicked video. Watching...');
-      await humanDelay(25000, 35000);
+      log.success('Clicked video. Watching...');
+      await humanDelay(25000, 35000); // Simulate watching
 
       success = true;
     } catch (err) {
-      logError(`Exception: ${err.message}`);
+      log.error(`Error: ${err.message}`);
       await humanDelay(2000, 4000);
     }
   }
 
   if (!success) {
-    logError('Max retries reached. Exiting...');
+    log.error('Failed after maximum retries.');
     process.exit(1);
   }
 
-  logSuccess('Script completed successfully.');
+  log.success('Job complete.');
   await browser.close();
 }
 

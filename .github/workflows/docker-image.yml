@@ -25,7 +25,7 @@ jobs:
         npm install playwright
 
     - name: Install Chromium only
-      run: npx playwright install chromium
-
+      run: npx playwright install
+      
     - name: Run your script (optional)
       run: node script.js -i "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; _ga_3J1CNV3M98=GS2.1.s1752988267$o4$g1$t1752988752$j50$l0$h0; csrf_cookie_name=c715a8b749fcd8da85cc12669a896ea0; ci_session=3b94r65ch1v5ckec3pk1j0igmbrpc3ui"

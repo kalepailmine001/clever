@@ -7,8 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-  view-bot-1:
+  run-script:
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - run: node --version
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # or your preferred version
+
+    - name: Install Playwright
+      run: |
+        npm init -y
+        npm install playwright
+
+    - name: Install Chromium only
+      run: npx playwright install chromium
+
+    - name: Run your script (optional)
+      run: node script.js -i "your_cookie_here"

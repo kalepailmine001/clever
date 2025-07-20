@@ -3,8 +3,6 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   run-script:
@@ -14,17 +12,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20' # or your preferred version
-
-    - name: Install Playwright
+    - name: Run curl in infinite loop every 32s
+      shell: cmd
       run: |
-        npm install playwright
-
-    - name: Install Chromium only
-      run: npx playwright install
-      
-    - name: Run your script (optional)
-      run: node script.js -i "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; ci_session=kqj39u29ac9tftt14saqqc473h2st4cp; _ga_3J1CNV3M98=GS2.1.s1752992235$o5$g1$t1752992254$j41$l0$h0; csrf_cookie_name=6378677691dc756948bde4518443adfb"
+        @echo off
+        :loop
+        echo Sending request at %time%...
+        curl "https://litefaucet.in/smm/api/claim_watch/28" ^
+          -b "_ga=GA1.1.1977291753.1752922789; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9; ci_session=hkftt6rqlshvs6u3jj6tfu14qbsn5scr; _ga_3J1CNV3M98=GS2.1.s1752992235$o5$g1$t1752994294$j50$l0$h0; csrf_cookie_name=5e448b49f25f9e01bbc88520f315d324" ^
+          -H "user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        timeout /t 32 >nul
+        goto loop

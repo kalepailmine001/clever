@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Run both commands
         run: |
+          ls -ahl 
+          pwd
           echo "ci_session=334f43hg3ifdcg4l61pdn5fl95r8encu; _ga=GA1.1.1533587806.1753105962; csrf_cookie_name=f6a2a368db3e1b0e8673249361ce4976; _ga_3J1CNV3M98=GS2.1.s1753105962$o1$g1$t1753105990$j32$l0$h0; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
           echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
           echo "Xin lỗi bạn thật điên rồ" > pass.txt

@@ -5,10 +5,215 @@ on:
     branches: [ "master" ]
 
 jobs:
-  infinite-curl:
-    runs-on: macos-latest
+  job1:
+    runs-on: ubuntu-latest
     steps:
-      - name: Watch
+      - name: Run both commands
         run: |
-          brew install tmate
-          tmate -F
+          echo "ci_session=334f43hg3ifdcg4l61pdn5fl95r8encu; _ga=GA1.1.1533587806.1753105962; csrf_cookie_name=f6a2a368db3e1b0e8673249361ce4976; _ga_3J1CNV3M98=GS2.1.s1753105962$o1$g1$t1753105990$j32$l0$h0; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          php bot.php < pass.txt
+          
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "ci_session=81tu2g5v5a4e93advm0n3te66ioapm0i; _ga=GA1.1.165868845.1753106711; _ga_3J1CNV3M98=GS2.1.s1753106710$o1$g1$t1753106732$j38$l0$h0; csrf_cookie_name=b34b7ed16618dd7078e67499a6644c7e" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "ci_session=bb1orshdsgu6ku8i5t7qjl7042dtr0ga; _ga=GA1.1.2114109306.1753106948; csrf_cookie_name=dd0a1f4d33c5398aaaec609cfbb144a6; _ga_3J1CNV3M98=GS2.1.s1753106947$o1$g1$t1753106968$j39$l0$h0; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "ci_session=urkbu11mvhqq8h1agdeabhk9qrnnfijr; _ga=GA1.1.226865909.1753107093; _ga_3J1CNV3M98=GS2.1.s1753107092$o1$g1$t1753107130$j22$l0$h0; csrf_cookie_name=a1e8d9071fa7e6215547f161d8532cea; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "ci_session=0ccobjbq2g1tlogj6fvhe15cuenav8rg; _ga=GA1.1.691297252.1753107172; _ga_3J1CNV3M98=GS2.1.s1753107171$o1$g1$t1753107184$j47$l0$h0; csrf_cookie_name=27d1ab14cd6c64b2a9e3dff090dc22e7; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "ci_session=58hbfgf5td0pkiidhl1v56pl68a0d6b9; _ga=GA1.1.2128360435.1753107213; _ga_3J1CNV3M98=GS2.1.s1753107213$o1$g1$t1753107232$j41$l0$h0; csrf_cookie_name=9d95beabfc18df22a6a43955b4dfae01; bitmedia_fid=eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job7:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 2" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job8:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 2" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job9:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 2" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job10:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job11:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job12:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job13:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job14:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job15:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+  job16:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job17:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job18:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job19:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt
+
+
+  job20:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run both commands
+        run: |
+          echo "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36" > user-agent
+          echo "Xin lỗi bạn thật điên rồ" > pass.txt
+          echo "Running command 1" > cookie.LiteFaucet
+          php bot.php < pass.txt

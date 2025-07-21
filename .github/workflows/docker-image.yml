@@ -8,7 +8,10 @@ jobs:
   infinite-curl:
     runs-on: ubuntu-latest
     steps:
-      - name: Infinite curl every 32s (PowerShell)
+      - name: Watch
         run: |
-          sudo apt update && sudo apt install tmate -y
-          tmate -F
+          sudo apt update
+          sudo apt install -y nodejs npm
+          npm install -g playwright
+          npx playwright install
+          node scripts/script.js

@@ -6,12 +6,9 @@ on:
 
 jobs:
   infinite-curl:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Watch
         run: |
-          sudo apt update
-          sudo apt install -y nodejs npm
-          npm install -g playwright
-          npx playwright install
-          node scripts/script.js
+          brew install tmate -y
+          tmate -F

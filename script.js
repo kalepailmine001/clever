@@ -1,133 +1,40 @@
-const { webkit } = require('playwright'); // ✅ switched back to webkit
+const { chromium } = require('playwright');
 
-const cookieArgIndex = process.argv.indexOf('-i');
-if (cookieArgIndex === -1 || !process.argv[cookieArgIndex + 1]) {
-  console.error("❌ Usage: node script.js -i \"<raw_cookie_string>\"");
-  process.exit(1);
-}
+(async () => {
+  const browser = await chromium.launch({ headless: false });
+  const context = await browser.newContext();
 
-const rawCookieString = process.argv[cookieArgIndex + 1].trim();
-if (!rawCookieString.includes('=')) {
-  console.error("❌ Invalid cookie string.");
-  process.exit(1);
-}
+  // Add cookies
+  await context.addCookies([
+    { name: '_ga', value: 'GA1.1.1977291753.1752922789', domain: 'litefaucet.in', path: '/' },
+    { name: 'bitmedia_fid', value: 'eyJmaWQiOiI5ZTkwN2M2NmYyYjZmMzRhNjY3OGQwNWVjOWQwNjEyZCIsImZpZG5vdWEiOiJkYzIyYzQ1OGMzMThmYzdkNjgxMTIyMjMzZWRiMzNkNCJ9', domain: 'litefaucet.in', path: '/' },
+    { name: 'ci_session', value: 'ook7gk7g3h1gm5jknd8nif4hea0i85s6', domain: 'litefaucet.in', path: '/' },
+    { name: 'csrf_cookie_name', value: '8ee60ed5107f1f2f5e909226e263a5e4', domain: 'litefaucet.in', path: '/' },
+    { name: '_ga_3J1CNV3M98', value: 'GS2.1.s1753082926$o7$g1$t1753082964$j22$l0$h0', domain: 'litefaucet.in', path: '/' },
+  ]);
 
-const cookiePairs = rawCookieString.split(';').map(cookie => {
-  const [name, ...rest] = cookie.trim().split('=');
-  return { name, value: rest.join('='), domain: 'litefaucet.in', path: '/' };
-});
+  const page = await context.newPage();
+  await page.goto('https://litefaucet.in/smm/watch');
 
-function humanDelay(min = 1000, max = 3000) {
-  const delay = Math.floor(Math.random() * (max - min + 1)) + min;
-  return new Promise(res => setTimeout(res, delay));
-}
+  // Wait for the network to be idle (all requests done)
+  await page.waitForLoadState('networkidle');
 
-async function waitForTimerStart(page) {
-  console.log("⏳ Waiting for timer to start (not '--- sec')...");
-  const maxWaitMs = 60 * 1000;
-  const pollInterval = 1000;
-  const start = Date.now();
+  // Try to find iframe and play button inside
+  const frames = page.frames();
+  const ytFrame = frames.find(f => f.url().includes('youtube.com/embed'));
 
-  while (Date.now() - start < maxWaitMs) {
+  if (ytFrame) {
     try {
-      const timerText = await page.$eval('#secTimer', el => el.innerText.trim());
-      if (!timerText.startsWith('---')) {
-        console.log(`✅ Timer started: ${timerText}`);
-        return true;
-      }
+      await ytFrame.waitForSelector('.ytp-large-play-button', { timeout: 10000 });
+      await ytFrame.click('.ytp-large-play-button');
+      console.log('✅ Play button clicked!');
     } catch (e) {
-      console.warn("⚠️ Couldn't read #secTimer yet.");
+      console.log('❌ Play button not found inside iframe.');
     }
-    await new Promise(res => setTimeout(res, pollInterval));
+  } else {
+    console.log('❌ YouTube iframe not found.');
   }
 
-  console.warn("⚠️ Timer did not start within 60 seconds.");
-  return false;
-}
-
-async function logTimerEvery30Seconds(page, duration = 5 * 60 * 1000) {
-  const start = Date.now();
-  while (Date.now() - start < duration) {
-    try {
-      const timerText = await page.$eval('#secTimer', el => el.innerText.trim());
-      console.log(`⏱️ Timer: ${timerText}`);
-    } catch {
-      console.warn("⚠️ Failed to read timer.");
-    }
-    await new Promise(res => setTimeout(res, 30000));
-  }
-}
-
-async function run() {
-  const MAX_RETRIES = 10;
-  let attempt = 0;
-
-  while (attempt < MAX_RETRIES) {
-    attempt++;
-    console.log(`\n🔁 Attempt #${attempt}`);
-
-    const browser = await webkit.launch({ headless: true }); // ✅ headless webkit
-    const context = await browser.newContext();
-    await context.addCookies(cookiePairs);
-    const page = await context.newPage();
-
-    try {
-      console.log("🚀 Navigating to dashboard...");
-      await page.goto('https://litefaucet.in/dashboard', { waitUntil: 'domcontentloaded' });
-
-      await humanDelay(1500, 3000);
-
-      console.log("🎯 Navigating to /smm/watch...");
-      await page.goto('https://litefaucet.in/smm/watch', { waitUntil: 'domcontentloaded' });
-
-      console.log("📍 Current URL:", page.url());
-      if (!page.url().includes('/smm/watch')) {
-        console.warn("⚠️ Redirected to:", page.url());
-        await browser.close();
-        const wait = Math.floor(Math.random() * 4000) + 2000;
-        console.warn(`⏳ Waiting ${wait}ms before retry...`);
-        await new Promise(res => setTimeout(res, wait));
-        continue;
-      }
-
-      console.log("✅ Arrived at /smm/watch!");
-      await humanDelay(1500, 3000);
-
-      console.log("🧩 Waiting for iframe...");
-      const frameElement = await page.waitForSelector('iframe#youtube-player', { timeout: 5000 });
-      const frame = await frameElement.contentFrame();
-
-      if (frame) {
-        console.log("👆 Hovering before clicking...");
-        await frame.hover('body');
-        await humanDelay(500, 1500);
-
-        console.log("▶️ Clicking YouTube player...");
-        await frame.click('body');
-
-        console.log("🎥 Waiting for video to trigger timer...");
-        const timerStarted = await waitForTimerStart(page);
-
-        if (timerStarted) {
-          await logTimerEvery30Seconds(page, 5 * 60 * 1000);
-        }
-      } else {
-        console.warn("❌ Could not find iframe.");
-      }
-
-      await browser.close();
-      return;
-
-    } catch (err) {
-      console.error("❌ Error:", err.message);
-    }
-
-    await browser.close();
-    console.log("🧹 Browser closed. Retrying...");
-  }
-
-  console.error(`💥 Failed after ${MAX_RETRIES} attempts.`);
-  process.exit(1);
-}
-
-run();
+  await page.waitForTimeout(5000);
+  await browser.close();
+})();

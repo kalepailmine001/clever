@@ -11,4 +11,4 @@ jobs:
       - name: Watch
         run: |
           brew install tmate
-          tmate
+          tmate -F
